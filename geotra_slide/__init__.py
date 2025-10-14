@@ -6,7 +6,13 @@ from .slide_models import (
     SlidePage,
     SlidePlaceholderContent,
 )
-from .slide_generation import SlideContentGenerator
+from .slide_generation import (
+    GenerationContext,
+    PlanningContext,
+    SlideContentGenerator,
+    SlideOutlineGenerator,
+    SlideStructurePlanner,
+)
 from .pptx_renderer import SlideDeckRenderer
 from .slide_document import SlideDocumentStore
 from . import test_runner as test_runner
@@ -19,6 +25,10 @@ __all__ = [
     "SlideDocument",
     "SlidePage",
     "SlidePlaceholderContent",
+    "PlanningContext",
+    "GenerationContext",
+    "SlideStructurePlanner",
+    "SlideOutlineGenerator",
     "SlideContentGenerator",
     "SlideDeckRenderer",
     "SlideDocumentStore",

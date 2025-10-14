@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import textwrap
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 try:  # pragma: no cover - exercised indirectly in import-time checks
     import streamlit as st
@@ -31,12 +31,23 @@ except ModuleNotFoundError as exc:  # pragma: no cover - depends on optional dep
 else:  # pragma: no cover - import branch depends on optional dependency
     STREAMLIT_IMPORT_ERROR = None
 
-from LLM_API.data_classes import StructuredOutputRequest, StructuredOutputResponse
+from LLM_API.data_classes import (
+    BaseResponse,
+    StructuredOutputRequest,
+    StructuredOutputResponse,
+    WebSearchResponse,
+)
 
 from geotra_slide.slide_document import SlideDocumentStore
-from geotra_slide.slide_generation import GenerationContext, SlideContentGenerator
-from geotra_slide.slide_library import SlideLibrary, SlideAsset
-from geotra_slide.slide_models import SlideDocument, SlidePage
+from geotra_slide.slide_generation import (
+    GenerationContext,
+    PlanningContext,
+    SlideContentGenerator,
+    SlideOutlineGenerator,
+    SlideStructurePlanner,
+)
+from geotra_slide.slide_library import SlideLibrary
+from geotra_slide.slide_models import SlideDocument
 from geotra_slide.pptx_renderer import SlideDeckRenderer
 
 
@@ -61,10 +72,82 @@ def _extract_request_excerpt(prompt: str, *, max_width: int = 80) -> str:
 class StubStructuredOutputLLM:
     """Simple stub that mimics structured output generation for demos/tests."""
 
-    def __init__(self, *, summary: str = "スタブ生成によるスライド概要") -> None:
+    def __init__(
+        self,
+        *,
+        summary: str = "スタブ生成によるスライド概要",
+        slide_library: Optional[SlideLibrary] = None,
+    ) -> None:
         self.summary = summary
+        self.slide_library = slide_library
 
-    def generate_structured_output(self, request: StructuredOutputRequest) -> StructuredOutputResponse:
+    # ------------------------------------------------------------------
+    # LLM compatible interface
+    # ------------------------------------------------------------------
+    def generate_content(self, request) -> BaseResponse:
+        excerpt = _extract_request_excerpt(getattr(request, "prompt", ""))
+        structure = (
+            f"{excerpt}を整理した2枚構成案です。"
+            " 表紙で目的を示し、続いて要点をまとめます。"
+        )
+        return BaseResponse(text=structure, model_used="stub-text")
+
+    def generate_structured_output(
+        self, request: StructuredOutputRequest
+    ) -> StructuredOutputResponse:
+        schema_props = request.schema.get("properties", {})
+        if "slides" in schema_props:
+            return self._generate_outline_response(request)
+        return self._generate_placeholder_response(request)
+
+    def web_search(self, request) -> WebSearchResponse:  # noqa: D401 - simple stub
+        return WebSearchResponse(
+            text="スタブによる簡易Web検索サマリー",
+            model_used="stub-web",
+            citations=[],
+        )
+
+    # ------------------------------------------------------------------
+    # Internal helpers
+    # ------------------------------------------------------------------
+    def _generate_outline_response(
+        self, request: StructuredOutputRequest
+    ) -> StructuredOutputResponse:
+        assets = list(self.slide_library.list_assets()) if self.slide_library else []
+        excerpt = _extract_request_excerpt(request.prompt)
+        slides: List[Dict[str, Any]] = []
+        if assets:
+            for idx, asset in enumerate(assets[:2], start=1):
+                slides.append(
+                    {
+                        "slide_id": f"slide_{idx:02d}",
+                        "page_number": idx,
+                        "asset_id": asset.asset_id,
+                        "title": f"{excerpt} - {asset.description[:12]}",
+                        "notes": f"スタブで選定: {asset.asset_id}",
+                    }
+                )
+        else:
+            slides.append(
+                {
+                    "slide_id": "slide_01",
+                    "page_number": 1,
+                    "asset_id": "stub_asset",
+                    "title": f"{excerpt} - 概要",
+                    "notes": "スタブで生成",
+                }
+            )
+
+        payload = {"slides": slides}
+        return StructuredOutputResponse(
+            text=json.dumps(payload, ensure_ascii=False),
+            parsed_output=payload,
+            model_used="stub-structured",
+        )
+
+    def _generate_placeholder_response(
+        self, request: StructuredOutputRequest
+    ) -> StructuredOutputResponse:
         placeholder_names: Iterable[str] = (
             request.schema
             .get("properties", {})
@@ -82,13 +165,13 @@ class StubStructuredOutputLLM:
                 {
                     "placeholder_name": name,
                     "text": text[:200],
-                    "references": [],
+                    "references": ["internal_report.md"],
                 }
             )
 
         parsed = {
             "slide_summary": self.summary,
-            "citations": [],
+            "citations": ["internal_report.md"],
             "placeholders": placeholders,
         }
         return StructuredOutputResponse(
@@ -107,7 +190,7 @@ def load_resources(path: Path = Path("assets")) -> Tuple[SlideLibrary, SlideDeck
     return library, renderer
 
 
-def _instantiate_llm(choice: str):
+def _instantiate_llm(choice: str, slide_library: SlideLibrary):
     if choice == "OpenAI (環境変数)":
         try:
             from LLM_API.providers.openai import OpenAIModel
@@ -119,12 +202,7 @@ def _instantiate_llm(choice: str):
             )
             st.text(str(exc))
             return None
-    return StubStructuredOutputLLM()
-
-
-def _asset_display_name(asset: SlideAsset) -> str:
-    tags = ", ".join(asset.tags)
-    return f"{asset.asset_id}｜{asset.description}{'｜' + tags if tags else ''}"
+    return StubStructuredOutputLLM(slide_library=slide_library)
 
 
 def _load_document_from_upload(upload) -> Optional[SlideDocument]:
@@ -132,16 +210,6 @@ def _load_document_from_upload(upload) -> Optional[SlideDocument]:
         return None
     data = json.load(upload)
     return SlideDocument.from_dict(data)
-
-
-def _build_slide_page(asset: SlideAsset, *, title: Optional[str]) -> SlidePage:
-    return SlidePage(
-        slide_id="slide_01",
-        page_number=1,
-        asset_id=asset.asset_id,
-        asset_file=asset.file_name,
-        title=title or asset.description,
-    )
 
 
 def _save_document(document: SlideDocument, path: Path) -> None:
@@ -163,123 +231,206 @@ def main() -> None:
     if not assets:
         st.error("スライドアセットが見つかりません。assets/slide_library を確認してください。")
         return
-    assets_map = {asset.asset_id: asset for asset in assets}
+
+    st.session_state.setdefault("slide_structure", "")
+    st.session_state.setdefault("document", None)
 
     with st.sidebar:
-        st.header("スライド設定")
-        asset_id = st.selectbox(
-            "使用するスライドアセット",
-            options=list(assets_map.keys()),
-            format_func=lambda key: _asset_display_name(assets_map[key]),
-        )
-        selected_asset = assets_map[asset_id]
-
-        title_input = st.text_input("スライドタイトル", value=selected_asset.description)
-
+        st.header("ジェネレーション設定")
         llm_option = st.radio(
             "生成モード",
             ("スタブ生成", "OpenAI (環境変数)"),
             index=0,
             help="OpenAIキーが未設定の場合はスタブ生成を利用してください。",
         )
-
+        perform_web_search = st.checkbox(
+            "Web検索を有効化",
+            value=False,
+            help="OpenAIモードでのみ有効です。スタブでは簡易サマリーを使用します。",
+        )
         uploaded = st.file_uploader("既存のslide.jsonを読み込む", type="json")
         loaded_document = _load_document_from_upload(uploaded)
         if loaded_document:
-            st.success("slide.jsonを読み込みました。下部で内容を確認できます。")
+            st.success("slide.jsonを読み込みました。構成と内容を下部に表示します。")
             st.session_state["document"] = loaded_document.to_dict()
+            structure_meta = loaded_document.metadata.get("slide_structure")
+            if structure_meta:
+                st.session_state["slide_structure"] = structure_meta
 
-        with st.expander("テンプレートのプレースホルダー", expanded=False):
-            for placeholder in selected_asset.placeholders:
+        with st.expander("テンプレート一覧", expanded=False):
+            for asset in assets[:20]:
                 st.markdown(
-                    f"**{placeholder.name}** — {placeholder.edit_policy}\n{placeholder.description}"
+                    f"- **{asset.asset_id}**: {asset.description[:80]}…"
                 )
+            if len(assets) > 20:
+                st.caption(f"他 {len(assets) - 20} 件のテンプレートがあります。")
 
-    st.subheader("ユーザー入力")
-    user_request = st.text_area(
-        "相談・依頼内容",
-        height=150,
-        placeholder="例：競合A社の環境施策に関する進捗報告をまとめたい",
+    st.subheader("ユーザーとの対話情報")
+    conversation_history = st.text_area(
+        "対話ログ",
+        height=180,
+        placeholder="例：ユーザーと交わした要件整理のメモを貼り付けてください",
     )
-    col1, col2 = st.columns(2)
-    with col1:
+    goal_input = st.text_area(
+        "最終的な依頼内容 / ゴール",
+        height=140,
+        placeholder="例：競合A社に対する最新の進捗報告資料を作成したい",
+    )
+
+    col_a, col_b = st.columns(2)
+    with col_a:
         target_company = st.text_input("ターゲット企業 / 想定読者", value="")
         external_research = st.text_area(
             "外部リサーチ要約 (任意)",
             height=120,
-            placeholder="Web検索や資料の要約を貼り付けます",
+            placeholder="Web検索や社外資料の要約を貼り付けます",
         )
-    with col2:
+    with col_b:
         additional_notes = st.text_area(
             "補足指示 (任意)",
             height=120,
-            placeholder="特に強調したいポイントや制約条件を入力",
+            placeholder="強調したいポイントや除外したい内容など",
         )
         internal_override = st.checkbox(
             "内部ドキュメントを読み込まない",
             help="チェックすると内部ドキュメントの読み込みをスキップします。",
         )
 
-    if "document" in st.session_state:
-        document = SlideDocument.from_dict(st.session_state["document"])
-    else:
-        slide = _build_slide_page(selected_asset, title=title_input)
-        document = SlideDocument(slides=[slide], metadata={})
+    step_cols = st.columns(3)
 
-    if st.button("スライドを生成", type="primary"):
-        if not user_request:
-            st.error("まずは相談内容を入力してください。")
-        else:
-            llm_client = _instantiate_llm(llm_option)
-            if llm_client is None:
-                st.info("LLMクライアントを初期化できなかったため、スタブ生成を利用します。")
-                llm_client = StubStructuredOutputLLM()
-            generator = SlideContentGenerator(
-                library,
-                llm_client=llm_client,
-                internal_document_path=Path("data/internal_report.md"),
-            )
-            slide = document.get_slide("slide_01")
-            if slide is None:
-                slide = _build_slide_page(selected_asset, title=title_input)
-                document.upsert_slide(slide)
-            context = GenerationContext(
-                user_request=user_request,
-                target_company=target_company or None,
-                external_research=external_research or None,
-                additional_notes=additional_notes or None,
-                internal_document=(
-                    "内部ドキュメントの参照は不要です。"
-                    if internal_override
-                    else None
-                ),
-            )
-            try:
-                updated_document = generator.generate_for_slide(
-                    document,
-                    slide_id=slide.slide_id,
-                    context=context,
+    with step_cols[0]:
+        if st.button("1. スライド構成を生成", type="primary"):
+            if not conversation_history or not goal_input:
+                st.error("対話ログとゴールの両方を入力してください。")
+            else:
+                llm_client = _instantiate_llm(llm_option, library)
+                if llm_client is None:
+                    st.info("LLMクライアントを初期化できなかったため、スタブ生成を利用します。")
+                    llm_client = StubStructuredOutputLLM(slide_library=library)
+                planner = SlideStructurePlanner(llm_client)
+                planning_context = PlanningContext(
+                    conversation_history=conversation_history,
+                    goal=goal_input,
+                    target_company=target_company or None,
+                    additional_requirements=additional_notes or None,
                 )
-                st.session_state["document"] = updated_document.to_dict()
-                st.success("スライド内容を更新しました。")
-            except Exception as exc:
-                st.error("スライド生成中にエラーが発生しました。")
-                st.exception(exc)
+                try:
+                    structure_text = planner.build_structure(planning_context)
+                    st.session_state["slide_structure"] = structure_text
+                    st.session_state["document"] = None
+                    st.success("スライド構成を生成しました。必要に応じて編集してください。")
+                except Exception as exc:
+                    st.error("スライド構成の生成中にエラーが発生しました。")
+                    st.exception(exc)
+
+    with step_cols[1]:
+        if st.button("2. スライドアウトラインを生成", type="secondary"):
+            structure_text = st.session_state.get("slide_structure", "")
+            if not structure_text.strip():
+                st.error("先にスライド構成を生成するか、手動で入力してください。")
+            else:
+                llm_client = _instantiate_llm(llm_option, library)
+                if llm_client is None:
+                    st.info("LLMクライアントを初期化できなかったため、スタブ生成を利用します。")
+                    llm_client = StubStructuredOutputLLM(slide_library=library)
+                outline_generator = SlideOutlineGenerator(library, llm_client=llm_client)
+                outline_context = GenerationContext(
+                    user_request=goal_input or structure_text,
+                    target_company=target_company or None,
+                    additional_notes=additional_notes or None,
+                )
+                try:
+                    document = outline_generator.generate_outline(
+                        slide_structure=structure_text,
+                        context=outline_context,
+                    )
+                    st.session_state["document"] = document.to_dict()
+                    st.success("スライドアウトラインを生成しました。")
+                except Exception as exc:
+                    st.error("スライドアウトラインの生成中にエラーが発生しました。")
+                    st.exception(exc)
+
+    with step_cols[2]:
+        if st.button("3. プレースホルダーを埋める", type="secondary"):
+            document_data = st.session_state.get("document")
+            if not document_data:
+                st.error("先にスライドアウトラインを生成してください。")
+            else:
+                llm_client = _instantiate_llm(llm_option, library)
+                if llm_client is None:
+                    st.info("LLMクライアントを初期化できなかったため、スタブ生成を利用します。")
+                    llm_client = StubStructuredOutputLLM(slide_library=library)
+                content_generator = SlideContentGenerator(
+                    library,
+                    llm_client=llm_client,
+                    internal_document_path=Path("data/internal_report.md"),
+                )
+                document = SlideDocument.from_dict(document_data)
+                generation_context = GenerationContext(
+                    user_request=goal_input or st.session_state.get("slide_structure", ""),
+                    target_company=target_company or None,
+                    external_research=external_research or None,
+                    additional_notes=additional_notes or None,
+                    internal_document=(
+                        "内部ドキュメントの参照は不要です。" if internal_override else None
+                    ),
+                    perform_web_search=perform_web_search,
+                )
+                try:
+                    updated_document = content_generator.generate_for_document(
+                        document,
+                        context=generation_context,
+                    )
+                    st.session_state["document"] = updated_document.to_dict()
+                    st.success("プレースホルダーを更新しました。")
+                except Exception as exc:
+                    st.error("プレースホルダー生成中にエラーが発生しました。")
+                    st.exception(exc)
 
     st.divider()
 
-    if "document" in st.session_state:
-        document = SlideDocument.from_dict(st.session_state["document"])
-        slide = document.get_slide("slide_01")
-        if slide:
+    slide_structure_editor = st.text_area(
+        "生成されたスライド構成 (編集可能)",
+        value=st.session_state.get("slide_structure", ""),
+        height=140,
+    )
+    st.session_state["slide_structure"] = slide_structure_editor
+
+    document_data = st.session_state.get("document")
+    if document_data:
+        document = SlideDocument.from_dict(document_data)
+        if not document.slides:
+            st.info("スライドアウトラインが空です。構成の再生成を試してください。")
+        else:
             st.subheader("生成結果")
-            if slide.title:
-                st.markdown(f"### {slide.title}")
-            for placeholder in slide.placeholders:
-                st.markdown(f"**{placeholder.name} ({placeholder.policy})**")
-                st.write(placeholder.text or "未生成")
-                if placeholder.references:
-                    st.caption("参照: " + ", ".join(placeholder.references))
+            tabs = st.tabs(
+                [
+                    f"{idx + 1}. {slide.title or slide.asset_id}"
+                    for idx, slide in enumerate(document.slides)
+                ]
+            )
+            for tab, slide in zip(tabs, document.slides):
+                with tab:
+                    st.markdown(f"**テンプレートID**: `{slide.asset_id}`")
+                    st.markdown(f"**テンプレートファイル**: {slide.asset_file}")
+                    st.markdown(f"**タイトル**: {slide.title or '未設定'}")
+                    if slide.notes.get("outline_notes"):
+                        st.info(f"アウトラインメモ: {slide.notes['outline_notes']}")
+                    if slide.notes.get("summary"):
+                        st.success(f"スライド要約: {slide.notes['summary']}")
+                    st.markdown("**プレースホルダー**")
+                    if not slide.placeholders:
+                        st.write("未生成です。ステップ3を実行してください。")
+                    else:
+                        for placeholder in slide.placeholders:
+                            st.markdown(
+                                f"- **{placeholder.name} ({placeholder.policy})**: {placeholder.text or '未生成'}"
+                            )
+                            if placeholder.references:
+                                st.caption(
+                                    "参照: " + ", ".join(sorted(set(placeholder.references)))
+                                )
+
             citations = document.metadata.get("references", [])
             if citations:
                 st.markdown("#### 参考文献")
@@ -295,20 +446,31 @@ def main() -> None:
             )
 
             pptx_bytes = None
-            preview_bytes = None
             try:
                 pptx_buffer = renderer.render_document(document)
                 pptx_bytes = pptx_buffer.getvalue()
-                preview_bytes = renderer.render_preview_image(
-                    document, pptx_bytes=pptx_bytes
-                )
             except Exception as exc:  # pragma: no cover - depends on assets
                 st.warning("PPTX生成に失敗しました。詳細は下記ログを確認してください。")
                 st.exception(exc)
 
             if pptx_bytes:
+                preview_index = st.number_input(
+                    "プレビューするスライド番号",
+                    min_value=1,
+                    max_value=len(document.slides),
+                    value=1,
+                )
+                preview_bytes = renderer.render_preview_image(
+                    document,
+                    pptx_bytes=pptx_bytes,
+                    slide_index=int(preview_index) - 1,
+                )
                 if preview_bytes:
-                    st.image(preview_bytes, caption="スライドプレビュー", use_column_width=True)
+                    st.image(
+                        preview_bytes,
+                        caption=f"スライド {int(preview_index)} プレビュー",
+                        use_container_width=True,
+                    )
                 else:
                     st.info(
                         "プレビュー画像を生成できませんでした。LibreOfficeのインストール状況を確認してください。"
@@ -317,17 +479,18 @@ def main() -> None:
                 st.download_button(
                     "PPTXをダウンロード",
                     data=pptx_bytes,
-                    file_name="generated_slide.pptx",
+                    file_name="generated_slides.pptx",
                     mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
                 )
 
             save_to_disk = st.checkbox("slide.jsonをプロジェクト内に保存", value=False)
             if save_to_disk:
                 output_path = Path("output/slide.json")
+                output_path.parent.mkdir(parents=True, exist_ok=True)
                 _save_document(document, output_path)
                 st.success(f"{output_path} に保存しました。")
 
-    st.caption("OpenAIキーが未設定の場合はスタブ生成モードでプレースホルダーの流れを確認できます。")
+    st.caption("各ステップは独立して実行できます。必要に応じて構成を編集した上で再生成してください。")
 
 
 if __name__ == "__main__":  # pragma: no cover - Streamlit handles execution
