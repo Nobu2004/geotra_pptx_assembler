@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import textwrap
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 try:  # pragma: no cover - exercised indirectly in import-time checks
     import streamlit as st
@@ -37,6 +37,7 @@ from geotra_slide.slide_document import SlideDocumentStore
 from geotra_slide.slide_generation import GenerationContext, SlideContentGenerator
 from geotra_slide.slide_library import SlideLibrary, SlideAsset
 from geotra_slide.slide_models import SlideDocument, SlidePage
+from geotra_slide.pptx_renderer import SlideDeckRenderer
 
 
 def _extract_request_excerpt(prompt: str, *, max_width: int = 80) -> str:
@@ -98,10 +99,12 @@ class StubStructuredOutputLLM:
 
 
 @st.cache_resource(show_spinner=False)
-def load_slide_library(path: Path = Path("assets")) -> SlideLibrary:
-    """Load the slide library manifests from ``assets``."""
+def load_resources(path: Path = Path("assets")) -> Tuple[SlideLibrary, SlideDeckRenderer]:
+    """Load the slide library and initialise the PPTX renderer."""
 
-    return SlideLibrary(path)
+    library = SlideLibrary(path)
+    renderer = SlideDeckRenderer(library)
+    return library, renderer
 
 
 def _instantiate_llm(choice: str):
@@ -155,7 +158,7 @@ def main() -> None:
     st.set_page_config(page_title="GEOTRA PPTX Assembler", layout="wide")
     st.title("GEOTRA PPTX Assembler")
 
-    library = load_slide_library()
+    library, renderer = load_resources()
     assets = sorted(library.list_assets(), key=lambda asset: asset.asset_id)
     if not assets:
         st.error("スライドアセットが見つかりません。assets/slide_library を確認してください。")
@@ -290,6 +293,33 @@ def main() -> None:
                 file_name="slide.json",
                 mime="application/json",
             )
+
+            pptx_bytes = None
+            preview_bytes = None
+            try:
+                pptx_buffer = renderer.render_document(document)
+                pptx_bytes = pptx_buffer.getvalue()
+                preview_bytes = renderer.render_preview_image(
+                    document, pptx_bytes=pptx_bytes
+                )
+            except Exception as exc:  # pragma: no cover - depends on assets
+                st.warning("PPTX生成に失敗しました。詳細は下記ログを確認してください。")
+                st.exception(exc)
+
+            if pptx_bytes:
+                if preview_bytes:
+                    st.image(preview_bytes, caption="スライドプレビュー", use_column_width=True)
+                else:
+                    st.info(
+                        "プレビュー画像を生成できませんでした。LibreOfficeのインストール状況を確認してください。"
+                    )
+
+                st.download_button(
+                    "PPTXをダウンロード",
+                    data=pptx_bytes,
+                    file_name="generated_slide.pptx",
+                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                )
 
             save_to_disk = st.checkbox("slide.jsonをプロジェクト内に保存", value=False)
             if save_to_disk:

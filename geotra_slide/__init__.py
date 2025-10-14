@@ -7,6 +7,7 @@ from .slide_models import (
     SlidePlaceholderContent,
 )
 from .slide_generation import SlideContentGenerator
+from .pptx_renderer import SlideDeckRenderer
 from .slide_document import SlideDocumentStore
 from . import test_runner as test_runner
 from .test_runner import run_default, run_tests
@@ -19,6 +20,7 @@ __all__ = [
     "SlidePage",
     "SlidePlaceholderContent",
     "SlideContentGenerator",
+    "SlideDeckRenderer",
     "SlideDocumentStore",
     "test_runner",
     "run_tests",
