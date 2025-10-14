@@ -104,6 +104,7 @@ scipy
 seaborn
 sentence-transformers
 sentencepiece
+streamlit
 setuptools
 six
 sniffio
