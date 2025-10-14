@@ -14,10 +14,10 @@ StructuredOutputResponse = data_classes.StructuredOutputResponse
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from src.slide_document import SlideDocumentStore
-from src.slide_generation import GenerationContext, SlideContentGenerator
-from src.slide_library import SlideLibrary
-from src.slide_models import SlideDocument, SlidePage
+from geotra_slide.slide_document import SlideDocumentStore
+from geotra_slide.slide_generation import GenerationContext, SlideContentGenerator
+from geotra_slide.slide_library import SlideLibrary
+from geotra_slide.slide_models import SlideDocument, SlidePage
 
 
 class StubLLM:
