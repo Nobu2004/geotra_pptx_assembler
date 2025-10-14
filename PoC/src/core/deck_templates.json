@@ -1,0 +1,80 @@
+{
+  "deck_templates": [
+    {
+      "id": "progress_report_kickoff",
+      "name": "進捗報告・キックオフ",
+      "description": "プロジェクトのキックオフや詳細な進捗報告会議で使用する、包括的なプレゼンテーション構成です。",
+      "keywords": ["進捗報告", "定例報告", "キックオフ", "報告資料","定例"],
+      "story": [
+        {
+          "slide_name": "表紙",
+          "search_query": "表紙, 進捗報告"
+        },
+        {
+          "slide_name": "アジェンダ",
+          "search_query": "アジェンダ, 目次"
+        },
+        {
+          "slide_name": "業務概要",
+          "search_query": "業務概要, プロジェクト概要"
+        },
+        {
+          "slide_name": "業務の背景、課題、ソリューション",
+          "search_query": "課題提案, 背景説明, 問題解決"
+        },
+        {
+          "slide_name": "目指すべき将来像",
+          "search_query": "ビジョン, 将来像, To-be, As-is"
+        },
+        {
+          "slide_name": "ロードマップ",
+          "search_query": "ロードマップ, スケジュール, タイムライン"
+        },
+        {
+          "slide_name": "打ち合わせスケジュールと報告事項",
+          "search_query": "スケジュール, 打ち合わせ, 進行管理"
+        },
+        {
+          "slide_name": "体制図",
+          "search_query": "体制図, 組織図, 役割分担"
+        },
+        {
+          "slide_name": "コミュニケーション方法",
+          "search_query": "コミュニケーション, 連絡方法"
+        },
+        {
+          "slide_name": "次回のアジェンダ",
+          "search_query": "次回アジェンダ, 会議"
+        },
+        {
+          "slide_name": "付録",
+          "search_query": "付録, Appendix"
+        }
+      ]
+    },
+    {
+      "id": "company_overview_standard",
+      "name": "標準会社概要",
+      "description": "初めての顧客に対して会社を紹介する際の標準的なプレゼンテーション構成です。",
+      "keywords": ["会社概要", "会社紹介"],
+      "story": [
+        {
+          "slide_name": "表紙",
+          "search_query": "表紙, 会社概要"
+        },
+        {
+          "slide_name": "扉",
+          "search_query": "扉, 会社概要"
+        },
+        {
+          "slide_name": "事業概要",
+          "search_query": "事業概要, サービス領域"
+        },
+        {
+          "slide_name": "顧客紹介",
+          "search_query": "顧客一覧, 協業実績"
+        }
+      ]
+    }
+  ]
+}

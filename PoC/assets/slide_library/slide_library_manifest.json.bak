@@ -1,0 +1,952 @@
+{
+  "slide_assets": [
+    {
+      "id": "roadmap_001",
+      "file_name": "roadmap.pptx",
+      "description": "フェーズ（上部の矢印）とレーン（左の青ラベル）のマトリクスで、各期間における主要タスクを配置するロードマップ。四半期・半期などの時系列で、上から「レーン1〜4」に対応する活動区分を並べ、各セルに箇条書きで具体タスクを記入する用途。",
+      "category": "ロードマップ",
+      "tags": [
+        "プロジェクト計画",
+        "タイムライン",
+        "フェーズ",
+        "スケジュール",
+        "実行計画"
+      ],
+      "placeholders": [
+        {
+          "name": "タイトル 2",
+          "description": "スライドの主題（例：プロジェクトロードマップ／年間計画）を簡潔に記載",
+          "edit_policy": "generate",
+          "idx": 0
+        },
+        {
+          "name": "テキスト プレースホルダー 1",
+          "description": "いて10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 44
+        },
+        {
+          "name": "テキスト プレースホルダー 3",
+          "description": "このロードマップサブタイトル・期間・範囲（例：対象スコープ、対象年度、前提）を1行で記載",
+          "edit_policy": "generate",
+          "idx": 45
+        },
+        {
+          "name": "テキスト プレースホルダー 4",
+          "description": "フェーズ1の名称",
+          "edit_policy": "generate",
+          "idx": 46
+        },
+        {
+          "name": "テキスト プレースホルダー 5",
+          "description": "フェーズ2の名称",
+          "edit_policy": "generate",
+          "idx": 47
+        },
+        {
+          "name": "テキスト プレースホルダー 6",
+          "description": "フェーズ3の名称",
+          "edit_policy": "generate",
+          "idx": 48
+        },
+        {
+          "name": "テキスト プレースホルダー 7",
+          "description": "フェーズ4の名称",
+          "edit_policy": "generate",
+          "idx": 49
+        },
+        {
+          "name": "テキスト プレースホルダー 8",
+          "description": "フェーズ2の設計について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 50
+        },
+        {
+          "name": "テキスト プレースホルダー 9",
+          "description": "フェーズ3の設計について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 51
+        },
+        {
+          "name": "テキスト プレースホルダー 10",
+          "description": "フェーズ4の設計について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 52
+        },
+        {
+          "name": "テキスト プレースホルダー 11",
+          "description": "設計と記載する",
+          "edit_policy": "fixed",
+          "idx": 53
+        },
+        {
+          "name": "テキスト プレースホルダー 12",
+          "description": "構築と記載",
+          "edit_policy": "fixed",
+          "idx": 54
+        },
+        {
+          "name": "テキスト プレースホルダー 13",
+          "description": "適用と記載",
+          "edit_policy": "fixed",
+          "idx": 55
+        },
+        {
+          "name": "テキスト プレースホルダー 14",
+          "description": "可視化と記載",
+          "edit_policy": "fixed",
+          "idx": 56
+        },
+        {
+          "name": "テキスト プレースホルダー 15",
+          "description": "フェーズ1の構築について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 57
+        },
+        {
+          "name": "テキスト プレースホルダー 16",
+          "description": "フェーズ2の構築について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 58
+        },
+        {
+          "name": "テキスト プレースホルダー 17",
+          "description": "フェーズ3の構築について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 59
+        },
+        {
+          "name": "テキスト プレースホルダー 18",
+          "description": "フェーズ4の構築について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 60
+        },
+        {
+          "name": "テキスト プレースホルダー 19",
+          "description": "フェーズ1の適用について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 61
+        },
+        {
+          "name": "テキスト プレースホルダー 20",
+          "description": "フェー2の適用について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 62
+        },
+        {
+          "name": "テキスト プレースホルダー 21",
+          "description": "フェーズ3の適用について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 63
+        },
+        {
+          "name": "テキスト プレースホルダー 22",
+          "description": "フェーズ4の適用について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 64
+        },
+        {
+          "name": "テキスト プレースホルダー 23",
+          "description": "フェーズ1の可視化について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 65
+        },
+        {
+          "name": "テキスト プレースホルダー 24",
+          "description": "フェーズ2の可視化につて10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 66
+        },
+        {
+          "name": "テキスト プレースホルダー 25",
+          "description": "フェーズ3の可視化について10字以内で記載",
+          "edit_policy": "generate",
+          "idx": 67
+        },
+        {
+          "name": "テキスト プレースホルダー 26",
+          "description": "フェーズ4の可視化について10字以内で可視化",
+          "edit_policy": "generate",
+          "idx": 68
+        }
+      ]
+    },
+    {
+      "id": "company_summary_001",
+      "file_name": "company_summary.pptx",
+      "description": "会社概要の「キービジュアル」スライド。左にキャッチコピーと説明文、右に背景イラスト＋親会社ロゴと自社ロゴで合弁体制を示す。",
+      "category": "会社紹介",
+      "tags": [
+        "会社概要",
+        "キービジュアル",
+        "ビジョン",
+        "合弁"
+      ],
+      "placeholders": [
+        {
+          "name": "Title 2",
+          "description": "概要と記載する",
+          "edit_policy": "fixed",
+          "idx": 0
+        }
+      ]
+    },
+    {
+      "id": "use_case_001",
+      "file_name": "use_case.pptx",
+      "description": "位置情報ビッグデータの活用事例（ユースケース）を6分野に分けて紹介するスライド。",
+      "category": "ユースケース紹介",
+      "tags": [
+        "事例紹介",
+        "活用分野",
+        "ビッグデータ",
+        "位置情報",
+        "分野別"
+      ],
+      "placeholders": [
+        {
+          "name": "Title 1",
+          "description": "ユースケースと記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        }
+      ]
+    },
+    {
+      "id": "overreview_001",
+      "file_name": "overreview.pptx",
+      "description": "プロジェクト概要ページでスライドの全体がどのような概要になっているかを説明する。それぞれのセクションは何ページに書かれているかも記載する",
+      "category": "プロジェクト概要, 業務概要, 背景説明, 箇条書き, シンプル",
+      "tags": [
+        "プロジェクト概要",
+        "業務概要",
+        "背景説明",
+        "箇条書き",
+        "シンプル"
+      ],
+      "placeholders": [
+        {
+          "name": "テキスト プレースホルダー 1",
+          "description": "スライドの主題（例：業務概要、プロジェクト概要）を記載",
+          "edit_policy": "generate",
+          "idx": 16
+        },
+        {
+          "name": "テキスト プレースホルダー 4",
+          "description": "スのセクションごとに箇条書きで記載。後ろにページ数も記載する",
+          "edit_policy": "generate",
+          "idx": 17
+        }
+      ]
+    },
+    {
+      "id": "archive_001",
+      "file_name": "archive.pptx",
+      "description": "過去資料やアーカイブ情報の概要を示すスライド。タイトルの下に説明文、さらに箇条書きで主要項目や格納内容を記載するレイアウト。",
+      "category": "アーカイブ概要",
+      "tags": [
+        "過去資料",
+        "アーカイブ",
+        "概要説明",
+        "箇条書き",
+        "シンプル"
+      ],
+      "placeholders": [
+        {
+          "name": "テキスト プレースホルダー 1",
+          "description": "過去の資料と記載",
+          "edit_policy": "fixed",
+          "idx": 16
+        },
+        {
+          "name": "テキスト プレースホルダー 4",
+          "description": "過去資料やアーカイブ内容の詳細や構成を箇条書きで記載",
+          "edit_policy": "generate",
+          "idx": 17
+        }
+      ]
+    },
+    {
+      "id": "business_overreview_001",
+      "file_name": "business_overreview.pptx",
+      "description": "事業概要を4つの主要領域（人流データプロダクト、AIシミュレーション、コンサルティング、基盤構築・DX支援）に分けて整理したスライド。左に「Data」、右に「AI / Engineering」を配置し、事業範囲と具体サービスを視覚的に表現する。",
+      "category": "事業概要",
+      "tags": [
+        "事業説明",
+        "サービス領域",
+        "ビッグデータ",
+        "AI",
+        "DX支援"
+      ],
+      "placeholders": [
+        {
+          "name": "Title 1",
+          "description": "事業概要と記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "Text Placeholder 18",
+          "description": "位置情報ビッグデータ活用のプロフェッショナルとして、",
+          "edit_policy": "fixed",
+          "idx": 45
+        }
+      ]
+    },
+    {
+      "id": "use_data_001",
+      "file_name": "use_data.pptx",
+      "description": "GEOTRAが扱う主要な位置情報データの種類を6つのカテゴリー（人流データ、車両データ、決済データ、物流データ、IoTデータ、地図データ）で紹介するスライド。アイコンとラベルで視覚的にわかりやすく分類している。",
+      "category": "データ種類紹介",
+      "tags": [
+        "位置情報データ",
+        "データ種類",
+        "人流",
+        "車両",
+        "決済",
+        "物流",
+        "IoT",
+        "地図"
+      ],
+      "placeholders": [
+        {
+          "name": "タイトル 2",
+          "description": "GEOTRAが扱う位置情報データと記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "テキスト プレースホルダー 25",
+          "description": "GEOTRAは様々な位置情報データを掛け合わせ、お客様の課題解決にアプローチいたします。",
+          "edit_policy": "fixed",
+          "idx": 73
+        }
+      ]
+    },
+    {
+      "id": "appendix_summary_001",
+      "file_name": "appendix_summary.pptx",
+      "description": "付録（Appendix）の概要を示すスライド。タイトルの下に説明文、さらに箇条書きで付録の構成や内容を列挙するレイアウト。",
+      "category": "付録概要",
+      "tags": [
+        "付録",
+        "Appendix"
+      ],
+      "placeholders": [
+        {
+          "name": "テキスト プレースホルダー 1",
+          "description": "付録と記載",
+          "edit_policy": "fixed",
+          "idx": 16
+        },
+        {
+          "name": "テキスト プレースホルダー 4",
+          "description": "付録の構成や主要項目を箇条書きで記載",
+          "edit_policy": "generate",
+          "idx": 17
+        }
+      ]
+    },
+    {
+      "id": "issue_001",
+      "file_name": "issue.pptx",
+      "description": "業務の背景・課題・ソリューションを3段構成で整理したスライド。左列に見出し（背景／課題／ソリューション）、右列に本文を配置し、提案内容を端的に説明する用途に適している",
+      "category": "課題提案",
+      "tags": [
+        "背景説明",
+        "課題整理",
+        "ソリューション提案",
+        "提案資料",
+        "問題解決"
+      ],
+      "placeholders": [
+        {
+          "name": "タイトル 1",
+          "description": "業務の背景、課題、ソリューションと記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "テキスト プレースホルダー 2",
+          "description": "背景と記載",
+          "edit_policy": "fixed",
+          "idx": 32
+        },
+        {
+          "name": "テキスト プレースホルダー 3",
+          "description": "スライド。このプロジェクトが解決したい課題の背景を記載する。内部データ議事録や定例会資料な企業のHの中長期経営企画書からも参照する。2ー3文程度で記載。",
+          "edit_policy": "generate",
+          "idx": 73
+        },
+        {
+          "name": "テキスト プレースホルダー 4",
+          "description": "課題と記載",
+          "edit_policy": "fixed",
+          "idx": 74
+        },
+        {
+          "name": "テキスト プレースホルダー 5",
+          "description": "このプロジェクトで取り組んでいる企業の課題について記載する。内部文章（議事録や定例会資料など）を参照しつつ、その企業の中長期経営企画書や有価証券報告書も参照する。2から3文程度で記載する。",
+          "edit_policy": "generate",
+          "idx": 75
+        },
+        {
+          "name": "テキスト プレースホルダー 6",
+          "description": "ソリューションと記載する",
+          "edit_policy": "fixed",
+          "idx": 76
+        },
+        {
+          "name": "テキスト プレースホルダー 7",
+          "description": "その企業の課題に対して、私たちのリソース（人流データ等）でするそのを記載する。内部の議事録文から3文で記載。",
+          "edit_policy": "generate",
+          "idx": 77
+        }
+      ]
+    },
+    {
+      "id": "communication_001",
+      "file_name": "communication.pptx",
+      "description": "プロジェクトのコミュニケーション方法を整理したスライド。タイトルの下に本文として使用ツールや連絡手段、定例ミーティングの頻度などを箇条書きで記載する。",
+      "category": "コミュニケーション計画",
+      "tags": [
+        "コミュニケーション",
+        "連絡方法",
+        "ミーティング",
+        "ツール",
+        "プロジェクト管理"
+      ],
+      "placeholders": [
+        {
+          "name": "タイトル 2",
+          "description": "コミュニケーション方法と記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "テキスト プレースホルダー 1",
+          "description": "連絡手段、使用ツール、会議頻度など具体的なコミュニケーション方法を箇条書きで記載",
+          "edit_policy": "generate",
+          "idx": 73
+        }
+      ]
+    },
+    {
+      "id": "next_agenda_001",
+      "file_name": "next_agenda.pptx",
+      "description": "次回のアジェンダについて箇条書きで記載する",
+      "category": "アジェンダ",
+      "tags": [
+        "会議",
+        "アジェンダ",
+        "議題"
+      ],
+      "placeholders": [
+        {
+          "name": "Title 3",
+          "description": "次回のアジェンダと記載する",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "テキスト プレースホルダー 2",
+          "description": "次の会議で扱う議題や項目を箇条書きで記載",
+          "edit_policy": "generate",
+          "idx": 73
+        }
+      ]
+    },
+    {
+      "id": "cover_regular_001",
+      "file_name": "cover_regular.pptx",
+      "description": "定例進捗報告用の表紙スライド。企業ロゴと背景ビジュアルを配置し、企業名と資料タイトルを中央寄せで表示する。報告会や定例ミーティングの冒頭に使用する。",
+      "category": "表紙",
+      "tags": [
+        "定例報告",
+        "進捗報告",
+        "表紙",
+        "タイトルスライド"
+      ],
+      "placeholders": [
+        {
+          "name": "テキスト プレースホルダー 2",
+          "description": "相手企業名を記載",
+          "edit_policy": "populate",
+          "idx": 16
+        },
+        {
+          "name": "テキスト プレースホルダー 1",
+          "description": "定例進捗と記載",
+          "edit_policy": "fixed",
+          "idx": 29
+        },
+        {
+          "name": "テキスト プレースホルダー 3",
+          "description": "相手企業名+に関する業務進捗報告資料と記載",
+          "edit_policy": "generate",
+          "idx": 30
+        }
+      ]
+    },
+    {
+      "id": "schedule_001",
+      "file_name": "schedule.pptx",
+      "description": "打ち合わせスケジュールと報告事項を一覧化したスライド。左に打ち合わせ予定、右に報告事項やマイルストーンを表形式で整理し、進行管理に活用できる。",
+      "category": "スケジュール管理",
+      "tags": [
+        "打ち合わせ",
+        "スケジュール",
+        "報告事項",
+        "マイルストーン",
+        "進行管理"
+      ],
+      "placeholders": [
+        {
+          "name": "タイトル 1",
+          "description": "打ち合わせスケジュールと報告事項",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "テキスト プレースホルダー 2",
+          "description": "打ち合わせと記載",
+          "edit_policy": "fixed",
+          "idx": 44
+        },
+        {
+          "name": "テキスト プレースホルダー 3",
+          "description": "打ち合わせ頻度やスケジュール概要箇条書きで記載",
+          "edit_policy": "generate",
+          "idx": 45
+        },
+        {
+          "name": "テキスト プレースホルダー 4",
+          "description": "報告事項と記載",
+          "edit_policy": "fixed",
+          "idx": 46
+        },
+        {
+          "name": "テキスト プレースホルダー 5",
+          "description": "マイルストーンと記載",
+          "edit_policy": "fixed",
+          "idx": 47
+        },
+        {
+          "name": "テキスト プレースホルダー 6",
+          "description": "せの日時を記載",
+          "edit_policy": "generate",
+          "idx": 48
+        },
+        {
+          "name": "テキスト プレースホルダー 7",
+          "description": "1回目の打ち合わせでのマイルストーンを記載",
+          "edit_policy": "generate",
+          "idx": 49
+        },
+        {
+          "name": "テキスト プレースホルダー 8",
+          "description": "1回の打ち合わせでの報告事項を記載",
+          "edit_policy": "generate",
+          "idx": 50
+        },
+        {
+          "name": "テキスト プレースホルダー 9",
+          "description": "2回目の打ち合わ日時を記載",
+          "edit_policy": "generate",
+          "idx": 51
+        },
+        {
+          "name": "テキスト プレースホルダー 10",
+          "description": "2回目の打ち合わせのマイルストーンを記載",
+          "edit_policy": "generate",
+          "idx": 52
+        },
+        {
+          "name": "テキスト プレースホルダー 11",
+          "description": "2回目の打ち合わせでの報告事項を記載",
+          "edit_policy": "generate",
+          "idx": 53
+        },
+        {
+          "name": "テキスト プレースホルダー 12",
+          "description": "3回目の打ち合わせの日時を記載",
+          "edit_policy": "generate",
+          "idx": 54
+        },
+        {
+          "name": "テキスト プレースホルダー 13",
+          "description": "3回目の打ち合わせのマイルストーンを記載",
+          "edit_policy": "generate",
+          "idx": 55
+        },
+        {
+          "name": "テキスト プレースホルダー 14",
+          "description": "3回目の打ち合わせの報告事項を記載",
+          "edit_policy": "generate",
+          "idx": 56
+        },
+        {
+          "name": "テキスト プレースホルダー 15",
+          "description": "n回目の打ち合わせの日時を記載",
+          "edit_policy": "generate",
+          "idx": 57
+        },
+        {
+          "name": "テキスト プレースホルダー 16",
+          "description": "n回目の打ち合わせのマイルストーンを記載",
+          "edit_policy": "generate",
+          "idx": 58
+        },
+        {
+          "name": "テキスト プレースホルダー 17",
+          "description": "n回目の打ち合わせの報告事項を記載",
+          "edit_policy": "generate",
+          "idx": 59
+        },
+        {
+          "name": "テキスト プレースホルダー 18",
+          "description": "n回目の打ち合わせの日時を記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 60
+        },
+        {
+          "name": "テキスト プレースホルダー 19",
+          "description": "n回目の打ち合わせのマイルストーンを記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 61
+        },
+        {
+          "name": "テキスト プレースホルダー 20",
+          "description": "n回目の打ち合わせの報告事項を記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 62
+        },
+        {
+          "name": "テキスト プレースホルダー 21",
+          "description": "n回目の打ち合わせの日時を記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 63
+        },
+        {
+          "name": "テキスト プレースホルダー 22",
+          "description": "n回目の打ち合わせのマイルストーンを記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 64
+        },
+        {
+          "name": "テキスト プレースホルダー 23",
+          "description": "n回目の打ち合わせの報告事項を記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 65
+        },
+        {
+          "name": "テキスト プレースホルダー 24",
+          "description": "n回目の打ち合わせの日時を記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 66
+        },
+        {
+          "name": "テキスト プレースホルダー 25",
+          "description": "n回目の打ち合わせのマイルストーンを記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 67
+        },
+        {
+          "name": "テキスト プレースホルダー 26",
+          "description": "n回目の打ち合わせの報告事項を記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 68
+        },
+        {
+          "name": "テキスト プレースホルダー 27",
+          "description": "n回目の打ち合わせの日時を記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 69
+        },
+        {
+          "name": "テキスト プレースホルダー 28",
+          "description": "n回目の打ち合わせのマイルストーンを記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 70
+        },
+        {
+          "name": "テキスト プレースホルダー 29",
+          "description": "n回目の打ち合わせの報告事項を記載（なければ記載なしでもOK）",
+          "edit_policy": "generate",
+          "idx": 71
+        }
+      ]
+    },
+    {
+      "id": "agenda_001",
+      "file_name": "agenda.pptx",
+      "description": "スライドの全体像を表すアジェンダ",
+      "category": "アジェンダ",
+      "tags": [
+        "アジェンダ、目次、全体像"
+      ],
+      "placeholders": [
+        {
+          "name": "Title 3",
+          "description": "アジェンダと記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        }
+      ]
+    },
+    {
+      "id": "cliant_001",
+      "file_name": "cliant.pptx",
+      "description": "GEOTRA の協業実績を「産・官・学」に分類し、各分野の主要顧客やパートナー企業・団体のロゴを一覧化したスライド。幅広いネットワークと信頼性を視覚的に訴求",
+      "category": "顧客紹介",
+      "tags": [
+        "顧客一覧",
+        "協業実績",
+        "産官学",
+        "事例紹介",
+        "パートナー"
+      ],
+      "placeholders": [
+        {
+          "name": "Title 1",
+          "description": "お客様（一例）と記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "Text Placeholder 153",
+          "description": "GEOTRAは、各業界のリーディングプレイヤーの方々と\u000b位置情報ビッグデータを用いた意思決定の高度化を進めています。",
+          "edit_policy": "fixed",
+          "idx": 45
+        }
+      ]
+    },
+    {
+      "id": "org_chart_001",
+      "file_name": "org_chart.pptx",
+      "description": "プロジェクトの体制図を示したスライド。プロジェクトオーナー、マネージャー、データサイエンティストなどの役割と担当者を階層的に配置し、組織内の役割分担と責任範囲を明確化している。",
+      "category": "組織構造・体制図",
+      "tags": [],
+      "placeholders": [
+        {
+          "name": "タイトル 1",
+          "description": "組織図と記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "テキスト プレースホルダー 2",
+          "description": "御社と記載",
+          "edit_policy": "generate",
+          "idx": 41
+        },
+        {
+          "name": "テキスト プレースホルダー 3",
+          "description": "GEOTRAと記載",
+          "edit_policy": "fixed",
+          "idx": 42
+        },
+        {
+          "name": "テキスト プレースホルダー 4",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 43
+        },
+        {
+          "name": "テキスト プレースホルダー 5",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 44
+        },
+        {
+          "name": "テキスト プレースホルダー 6",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 45
+        },
+        {
+          "name": "テキスト プレースホルダー 7",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 46
+        },
+        {
+          "name": "テキスト プレースホルダー 8",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 47
+        },
+        {
+          "name": "テキスト プレースホルダー 9",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 48
+        },
+        {
+          "name": "テキスト プレースホルダー 10",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 49
+        },
+        {
+          "name": "テキスト プレースホルダー 11",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 50
+        },
+        {
+          "name": "テキスト プレースホルダー 12",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 51
+        },
+        {
+          "name": "テキスト プレースホルダー 13",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 52
+        },
+        {
+          "name": "テキスト プレースホルダー 14",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 53
+        },
+        {
+          "name": "テキスト プレースホルダー 15",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 54
+        },
+        {
+          "name": "テキスト プレースホルダー 16",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 55
+        },
+        {
+          "name": "テキスト プレースホルダー 17",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 56
+        },
+        {
+          "name": "テキスト プレースホルダー 18",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 57
+        },
+        {
+          "name": "テキスト プレースホルダー 19",
+          "description": "",
+          "edit_policy": "fixed",
+          "idx": 58
+        }
+      ]
+    },
+    {
+      "id": "vison_001",
+      "file_name": "vison.pptx",
+      "description": "目指すべき将来像を示すスライド。現状（As-is）と将来像（To-be）を比較形式で整理し、GEOTRAのビジョンや方向性を視覚的に共有する。",
+      "category": "ビジョン・方向性",
+      "tags": [
+        "将来像",
+        "現状分析",
+        "To-be",
+        "As-is",
+        "ビジョン",
+        "戦略共有"
+      ],
+      "placeholders": [
+        {
+          "name": "タイトル 1",
+          "description": "目指すべき将来像と記載",
+          "edit_policy": "fixed",
+          "idx": 0
+        },
+        {
+          "name": "テキスト プレースホルダー 2",
+          "description": "相手企業を記載",
+          "edit_policy": "populate",
+          "idx": 32
+        },
+        {
+          "name": "テキスト プレースホルダー 3",
+          "description": "GEOTRAと記載",
+          "edit_policy": "fixed",
+          "idx": 33
+        },
+        {
+          "name": "テキスト プレースホルダー 4",
+          "description": "As isと記載し、その後に、相手企業の現状箇条書き記載",
+          "edit_policy": "generate",
+          "idx": 73
+        },
+        {
+          "name": "テキスト プレースホルダー 5",
+          "description": "As isと記載し私たちの現状を箇条書きで記載",
+          "edit_policy": "generate",
+          "idx": 74
+        },
+        {
+          "name": "テキスト プレースホルダー 6",
+          "description": "To beと記載し、その後相手企業の理想像を記載",
+          "edit_policy": "generate",
+          "idx": 75
+        },
+        {
+          "name": "テキスト プレースホルダー 7",
+          "description": "To beと記載し、その私たちの理想像を記載",
+          "edit_policy": "generate",
+          "idx": 76
+        }
+      ]
+    },
+    {
+      "id": "cover_company_summary_001",
+      "file_name": "cover_company_summary.pptx",
+      "description": "会社概要を説明するときの表紙",
+      "category": "表紙",
+      "tags": [
+        "表紙"
+      ],
+      "placeholders": [
+        {
+          "name": "Text Placeholder 1",
+          "description": "会社概要と記載",
+          "edit_policy": "fixed",
+          "idx": 29
+        },
+        {
+          "name": "Text Placeholder 3",
+          "description": "会社概要と記載",
+          "edit_policy": "fixed",
+          "idx": 30
+        },
+        {
+          "name": "Text Placeholder 4",
+          "description": "今月の月を20XX.Yと記載",
+          "edit_policy": "populate",
+          "idx": 32
+        }
+      ]
+    },
+    {
+      "id": "section_company_summary_001",
+      "file_name": "section_company_summary.pptx",
+      "description": "会社概要を説明する前の時だけ使う",
+      "category": "扉",
+      "tags": [
+        "扉"
+      ],
+      "placeholders": [
+        {
+          "name": "Text Placeholder 1",
+          "description": "会社概要と記載",
+          "edit_policy": "fixed",
+          "idx": 16
+        }
+      ]
+    }
+  ]
+}

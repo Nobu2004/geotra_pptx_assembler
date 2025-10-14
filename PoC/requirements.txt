@@ -1,0 +1,27 @@
+# requirements.txt
+
+# UI / Backend
+streamlit
+
+# AI Workflow & Models
+langchain
+langgraph
+langchain_google_genai
+python-dotenv
+
+# PowerPoint Manipulation
+python-pptx
+
+# Data Schemas
+pydantic
+
+# RAG Tools (Information Retrieval)
+langchain_community
+pydoc-markdown # pypdfのタイポ修正
+faiss-cpu
+sentence-transformers
+unstructured
+markdown
+langchain-tavily
+langchain-huggingface # ★★★ 新しい埋め込みモデルライブラリ ★★★
+google-generativeai
