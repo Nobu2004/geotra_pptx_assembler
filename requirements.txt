@@ -54,6 +54,7 @@ kiwisolver
 langchain
 langchain-core
 langchain-text-splitters
+langgraph
 langsmith
 libclang
 Mako
@@ -76,6 +77,7 @@ optuna
 orjson
 packaging
 pandas
+python-pptx
 pillow
 propcache
 proto-plus
@@ -104,6 +106,7 @@ scipy
 seaborn
 sentence-transformers
 sentencepiece
+streamlit
 setuptools
 six
 sniffio
