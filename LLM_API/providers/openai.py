@@ -77,11 +77,13 @@ class OpenAIModel(CallModel):
             request_data["instructions"] = request.instructions
         try:
             response = self.client.responses.parse(**request_data)
+            parsed = getattr(response, "output_parsed", None)
+            serialized = json.dumps(parsed) if parsed is not None else ""
             return StructuredOutputResponse(
-                text=json.dumps(getattr(response, 'output_parsed', None)) if getattr(response, 'output_parsed', None) is not None else "",
-                parsed_output=getattr(response, 'output_parsed', None),
+                text=serialized,
+                parsed_output=parsed,
                 model_used=request.model_name or self.model_name,
-                raw_response=response
+                raw_response=response,
             )
         except Exception as e:
             try:
