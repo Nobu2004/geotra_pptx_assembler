@@ -1,6 +1,9 @@
 import io
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("pptx")
 from pptx import Presentation
 
 from geotra_slide.pptx_renderer import SlideDeckRenderer

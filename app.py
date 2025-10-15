@@ -234,6 +234,8 @@ def main() -> None:
 
     st.session_state.setdefault("slide_structure", "")
     st.session_state.setdefault("document", None)
+    st.session_state.setdefault("slide_structure_editor", st.session_state["slide_structure"])
+    st.session_state.setdefault("preview_index", 1)
 
     with st.sidebar:
         st.header("ジェネレーション設定")
@@ -256,6 +258,7 @@ def main() -> None:
             structure_meta = loaded_document.metadata.get("slide_structure")
             if structure_meta:
                 st.session_state["slide_structure"] = structure_meta
+                st.session_state["slide_structure_editor"] = structure_meta
 
         with st.expander("テンプレート一覧", expanded=False):
             for asset in assets[:20]:
@@ -296,32 +299,67 @@ def main() -> None:
             help="チェックすると内部ドキュメントの読み込みをスキップします。",
         )
 
+    st.subheader("スライド構成の設定")
+    structure_mode = st.radio(
+        "スライド構成の入力方法",
+        ("対話から生成", "手動入力"),
+        index=0,
+        horizontal=True,
+    )
+
+    placeholder_text = (
+        "例：1. 表紙で狙いを明示\n2. 進捗ハイライト\n3. 次のアクション"
+        if structure_mode == "手動入力"
+        else "ボタンで自動生成後に必要に応じて編集できます"
+    )
+
+    slide_structure_editor = st.text_area(
+        "スライド構成 (自動生成後に編集可能)",
+        key="slide_structure_editor",
+        height=160,
+        placeholder=placeholder_text,
+    )
+    st.session_state["slide_structure"] = slide_structure_editor
+
     step_cols = st.columns(3)
 
     with step_cols[0]:
-        if st.button("1. スライド構成を生成", type="primary"):
-            if not conversation_history or not goal_input:
-                st.error("対話ログとゴールの両方を入力してください。")
-            else:
-                llm_client = _instantiate_llm(llm_option, library)
-                if llm_client is None:
-                    st.info("LLMクライアントを初期化できなかったため、スタブ生成を利用します。")
-                    llm_client = StubStructuredOutputLLM(slide_library=library)
-                planner = SlideStructurePlanner(llm_client)
-                planning_context = PlanningContext(
-                    conversation_history=conversation_history,
-                    goal=goal_input,
-                    target_company=target_company or None,
-                    additional_requirements=additional_notes or None,
-                )
-                try:
-                    structure_text = planner.build_structure(planning_context)
-                    st.session_state["slide_structure"] = structure_text
+        if st.button("1. スライド構成を生成 / 適用", type="primary"):
+            if structure_mode == "手動入力":
+                manual_structure = st.session_state.get("slide_structure_editor", "").strip()
+                if not manual_structure:
+                    st.error("手動入力モードではスライド構成を入力してください。")
+                else:
+                    st.session_state["slide_structure"] = manual_structure
+                    st.session_state["slide_structure_editor"] = manual_structure
                     st.session_state["document"] = None
-                    st.success("スライド構成を生成しました。必要に応じて編集してください。")
-                except Exception as exc:
-                    st.error("スライド構成の生成中にエラーが発生しました。")
-                    st.exception(exc)
+                    st.session_state["preview_index"] = 1
+                    st.success("手動入力したスライド構成を適用しました。")
+            else:
+                if not conversation_history or not goal_input:
+                    st.error("対話ログとゴールの両方を入力してください。")
+                else:
+                    llm_client = _instantiate_llm(llm_option, library)
+                    if llm_client is None:
+                        st.info("LLMクライアントを初期化できなかったため、スタブ生成を利用します。")
+                        llm_client = StubStructuredOutputLLM(slide_library=library)
+                    planner = SlideStructurePlanner(llm_client)
+                    planning_context = PlanningContext(
+                        conversation_history=conversation_history,
+                        goal=goal_input,
+                        target_company=target_company or None,
+                        additional_requirements=additional_notes or None,
+                    )
+                    try:
+                        structure_text = planner.build_structure(planning_context)
+                        st.session_state["slide_structure"] = structure_text
+                        st.session_state["slide_structure_editor"] = structure_text
+                        st.session_state["document"] = None
+                        st.session_state["preview_index"] = 1
+                        st.success("スライド構成を生成しました。必要に応じて編集してください。")
+                    except Exception as exc:
+                        st.error("スライド構成の生成中にエラーが発生しました。")
+                        st.exception(exc)
 
     with step_cols[1]:
         if st.button("2. スライドアウトラインを生成", type="secondary"):
@@ -345,6 +383,7 @@ def main() -> None:
                         context=outline_context,
                     )
                     st.session_state["document"] = document.to_dict()
+                    st.session_state["preview_index"] = 1
                     st.success("スライドアウトラインを生成しました。")
                 except Exception as exc:
                     st.error("スライドアウトラインの生成中にエラーが発生しました。")
@@ -382,19 +421,13 @@ def main() -> None:
                         context=generation_context,
                     )
                     st.session_state["document"] = updated_document.to_dict()
+                    st.session_state["preview_index"] = 1
                     st.success("プレースホルダーを更新しました。")
                 except Exception as exc:
                     st.error("プレースホルダー生成中にエラーが発生しました。")
                     st.exception(exc)
 
     st.divider()
-
-    slide_structure_editor = st.text_area(
-        "生成されたスライド構成 (編集可能)",
-        value=st.session_state.get("slide_structure", ""),
-        height=140,
-    )
-    st.session_state["slide_structure"] = slide_structure_editor
 
     document_data = st.session_state.get("document")
     if document_data:
@@ -454,11 +487,18 @@ def main() -> None:
                 st.exception(exc)
 
             if pptx_bytes:
+                max_slides = len(document.slides)
+                default_preview = st.session_state.get("preview_index", 1)
+                default_preview = max(1, min(default_preview, max_slides))
+                if st.session_state.get("preview_index") != default_preview:
+                    st.session_state["preview_index"] = default_preview
                 preview_index = st.number_input(
                     "プレビューするスライド番号",
                     min_value=1,
-                    max_value=len(document.slides),
-                    value=1,
+                    max_value=max_slides,
+                    value=default_preview,
+                    key="preview_index",
+                    step=1,
                 )
                 preview_bytes = renderer.render_preview_image(
                     document,

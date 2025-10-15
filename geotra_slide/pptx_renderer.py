@@ -8,10 +8,19 @@ import tempfile
 from pathlib import Path
 from typing import Dict, Iterable, Optional
 
-from pptx import Presentation
-from pptx.enum.shapes import MSO_SHAPE_TYPE
-from pptx.shapes.base import BaseShape
-from pptx.shapes.placeholder import SlidePlaceholder
+try:  # pragma: no cover - import guard for optional dependency
+    from pptx import Presentation
+    from pptx.enum.shapes import MSO_SHAPE_TYPE
+    from pptx.shapes.base import BaseShape
+    from pptx.shapes.placeholder import SlidePlaceholder
+except ModuleNotFoundError as exc:  # pragma: no cover - depends on environment
+    PPTX_IMPORT_ERROR = exc
+    Presentation = None  # type: ignore[assignment]
+    MSO_SHAPE_TYPE = None  # type: ignore[assignment]
+    BaseShape = object  # type: ignore[assignment]
+    SlidePlaceholder = object  # type: ignore[assignment]
+else:  # pragma: no cover - normal runtime branch
+    PPTX_IMPORT_ERROR = None
 
 from .slide_library import SlideLibrary
 from .slide_models import SlideDocument, SlidePlaceholderContent
@@ -21,6 +30,12 @@ class SlideDeckRenderer:
     """Render slide documents into PPTX binaries (and optional previews)."""
 
     def __init__(self, slide_library: SlideLibrary) -> None:
+        if PPTX_IMPORT_ERROR is not None:
+            raise RuntimeError(
+                "python-pptxのインポートに失敗しました。PPTX生成機能を利用するには"
+                " 'python-pptx' パッケージをインストールしてください。"
+            ) from PPTX_IMPORT_ERROR
+
         self.slide_library = slide_library
         self.master_template_path = self.slide_library.master_template_path()
 

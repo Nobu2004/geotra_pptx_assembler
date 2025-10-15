@@ -1,8 +1,11 @@
-import json
 import importlib.util
+import io
+import json
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("pptx")
 
 DATA_CLASSES_PATH = (
     Path(__file__).resolve().parents[1] / "LLM_API" / "data_classes.py"
@@ -15,6 +18,9 @@ StructuredOutputResponse = data_classes.StructuredOutputResponse
 BaseResponse = data_classes.BaseResponse
 WebSearchResponse = data_classes.WebSearchResponse
 
+from pptx import Presentation
+
+from geotra_slide.pptx_renderer import SlideDeckRenderer
 from geotra_slide.slide_document import SlideDocumentStore
 from geotra_slide.slide_generation import (
     GenerationContext,
@@ -45,6 +51,8 @@ class MultiStageStubLLM:
                 parsed_output=self.outline_payload,
                 model_used="stub-structured",
             )
+        if not self.placeholder_payloads:
+            raise AssertionError("No placeholder payloads left for request")
         payload = self.placeholder_payloads.pop(0)
         self.placeholder_requests.append(request)
         return StructuredOutputResponse(
@@ -189,3 +197,69 @@ def test_slide_document_store_roundtrip(tmp_path):
 
     loaded = store.load()
     assert loaded.to_dict() == document.to_dict()
+
+
+def test_placeholder_generation_enables_pptx_rendering(slide_library):
+    outline_payload = {
+        "slides": [
+            {
+                "slide_id": "slide_01",
+                "page_number": 1,
+                "asset_id": "cover_regular_001",
+                "title": "四半期の狙い",
+            }
+        ]
+    }
+    placeholder_payloads = [
+        {
+            "placeholders": [
+                {
+                    "placeholder_name": "テキスト プレースホルダー 3",
+                    "text": "四半期概況を冒頭で整理",
+                    "references": ["internal_report.md"],
+                }
+            ],
+            "slide_summary": "QBR概要",
+            "citations": ["internal_report.md"],
+        }
+    ]
+
+    stub_llm = MultiStageStubLLM(
+        outline_payload=outline_payload,
+        placeholder_payloads=placeholder_payloads,
+        structure_text="表紙とハイライトで構成",
+    )
+
+    outline_context = GenerationContext(
+        user_request="四半期事業レビュー資料を作成したい",
+        target_company="ACME",
+    )
+    outline_generator = SlideOutlineGenerator(slide_library, llm_client=stub_llm)
+    document = outline_generator.generate_outline(
+        slide_structure="四半期レビューの章立て", context=outline_context
+    )
+
+    content_generator = SlideContentGenerator(
+        slide_library,
+        llm_client=stub_llm,
+        internal_document_path=Path("data/internal_report.md"),
+    )
+    generation_context = GenerationContext(
+        user_request="四半期事業レビュー資料を作成したい",
+        target_company="ACME",
+        perform_web_search=False,
+    )
+    populated_document = content_generator.generate_for_document(
+        document, context=generation_context
+    )
+
+    renderer = SlideDeckRenderer(slide_library)
+    pptx_stream = renderer.render_document(populated_document)
+    prs = Presentation(io.BytesIO(pptx_stream.getvalue()))
+    assert len(prs.slides) == 1
+    texts = [
+        shape.text_frame.text
+        for shape in prs.slides[0].shapes
+        if getattr(shape, "has_text_frame", False)
+    ]
+    assert any("四半期概況" in text for text in texts)
