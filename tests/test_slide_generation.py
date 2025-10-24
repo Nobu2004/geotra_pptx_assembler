@@ -1,22 +1,9 @@
-import importlib.util
 import io
-import json
 from pathlib import Path
 
 import pytest
 
 pytest.importorskip("pptx")
-
-DATA_CLASSES_PATH = (
-    Path(__file__).resolve().parents[1] / "LLM_API" / "data_classes.py"
-)
-spec = importlib.util.spec_from_file_location("LLM_API.data_classes", DATA_CLASSES_PATH)
-data_classes = importlib.util.module_from_spec(spec)
-assert spec.loader is not None
-spec.loader.exec_module(data_classes)
-StructuredOutputResponse = data_classes.StructuredOutputResponse
-BaseResponse = data_classes.BaseResponse
-WebSearchResponse = data_classes.WebSearchResponse
 
 from pptx import Presentation
 
@@ -31,38 +18,7 @@ from geotra_slide.slide_generation import (
 )
 from geotra_slide.slide_library import SlideLibrary
 
-
-class MultiStageStubLLM:
-    def __init__(self, *, outline_payload, placeholder_payloads, structure_text="構成案"):
-        self.outline_payload = outline_payload
-        self.placeholder_payloads = list(placeholder_payloads)
-        self.structure_text = structure_text
-        self.outline_requests = []
-        self.placeholder_requests = []
-
-    def generate_content(self, request):
-        return BaseResponse(text=self.structure_text, model_used="stub-text")
-
-    def generate_structured_output(self, request):
-        if request.schema_name == "slide_outline":
-            self.outline_requests.append(request)
-            return StructuredOutputResponse(
-                text=json.dumps(self.outline_payload, ensure_ascii=False),
-                parsed_output=self.outline_payload,
-                model_used="stub-structured",
-            )
-        if not self.placeholder_payloads:
-            raise AssertionError("No placeholder payloads left for request")
-        payload = self.placeholder_payloads.pop(0)
-        self.placeholder_requests.append(request)
-        return StructuredOutputResponse(
-            text=json.dumps(payload, ensure_ascii=False),
-            parsed_output=payload,
-            model_used="stub-structured",
-        )
-
-    def web_search(self, request):
-        return WebSearchResponse(text="stub web search summary", model_used="stub-web")
+from tests.llm_stubs import MultiStageStubLLM
 
 
 @pytest.fixture(scope="module")
